@@ -1,7 +1,8 @@
 import 'package:mqtt_client/mqtt_client.dart';
 import 'package:mqtt_client/mqtt_server_client.dart';
+import 'config.dart';
 
-final client = MqttServerClient('mqtt.hfg.design', '1883');
+final client = MqttServerClient(MQTT_HOST, '1883');
 
 void onConnected() {
   print('OnConnected client callback - Client connection was sucessful');

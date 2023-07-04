@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_reactive_ble/flutter_reactive_ble.dart';
-// import 'package:location_permissions/location_permissions.dart';
+
 import 'package:permission_handler/permission_handler.dart';
+import 'package:flutter_osm_plugin/flutter_osm_plugin.dart';
 
 import 'mqtt.dart';
 
@@ -14,8 +15,10 @@ int count = 0;
 
 
 Future<void> main() async {
-  
+
   connectMqtt();
+
+
 
   runApp(
     MaterialApp(
@@ -40,9 +43,9 @@ class _PeakFinderState extends State<PeakFinder> {
   late StreamSubscription<DiscoveredDevice> _scanStream;
   late QualifiedCharacteristic _rxCharacteristic;
 
-  final Uuid serviceUuid = Uuid.parse("75C276C3-8F97-20BC-A143-B354244886D4");
+  final Uuid serviceUuid = Uuid.parse("07c0e33c-6cc2-4a68-a7df-478e334e0ed6");
   final Uuid characteristicUuid =
-      Uuid.parse("6ACF4F08-CC9D-D495-6B41-AA7E60C4E8A6");
+      Uuid.parse("beb5483e-36e1-4688-b7f5-ea07361b26a8");
 
   void _startScan() async {
     // bool permGranted = false;
@@ -52,25 +55,62 @@ class _PeakFinderState extends State<PeakFinder> {
     await Permission.location.request();
     await Permission.bluetoothScan.request();
     await Permission.bluetoothConnect.request();
+
+    print(await Permission.location.isGranted && await Permission.bluetoothScan.isGranted && await Permission.bluetoothConnect.isGranted);
     if (await Permission.location.isGranted && await Permission.bluetoothScan.isGranted && await Permission.bluetoothConnect.isGranted) {
       try {
+          print("count:");
         _scanStream = flutterReactiveBle
-            .scanForDevices(withServices: [serviceUuid]).listen((device) {
-          if (device.name == 'UBIQUE') {
+            .scanForDevices(withServices: [],scanMode: ScanMode.lowLatency).listen((device) {
+              // print(device.serviceUuids);
+            // .scanForDevices(){
+          if (device.name == 'ESP32_PeakFinder') {
             print('Found device: ${device.name}');
+            flutterReactiveBle.discoverServices(device.id)
+              .then((services) {
+                services.forEach ((service) {
+                if(service.serviceId ==serviceUuid){
+                  print(service.serviceId);
+                  _connectToDevice(device.id);
+                }
+                });
+              });
             setState(() {
               _ubiqueDevice = device;
               _foundDeviceWaitingToConnect = true;
             });
           }
+          else {
+            // print('Found other device: ${device.name}');
+          }
         });
       } catch (e) {
         print('Error while scanning for devices: $e');
       }
-    } else {
+    } 
+    
+    else {
       print('Location permission not granted');
     }
   }
+
+  void _connectToDevice(String deviceId) {
+  // We're done scanning, we can cancel it
+  _scanStream.cancel();
+  // Let's listen to our connection so we can make updates on a state change
+  Stream<ConnectionStateUpdate> _currentConnectionStream = flutterReactiveBle
+      .connectToAdvertisingDevice(
+          id: deviceId,
+          prescanDuration: const Duration(seconds: 3),
+          withServices: <Uuid>[]);
+  _currentConnectionStream.listen( (event)async {
+    print(":::::::: ${event.connectionState.name}");
+    final characteristic = QualifiedCharacteristic(serviceId: serviceUuid, characteristicId: characteristicUuid, deviceId: deviceId);
+    final response = await flutterReactiveBle.readCharacteristic(characteristic);
+    print(String.fromCharCodes(response));
+  });
+}
+
 
 
   @override
@@ -82,27 +122,32 @@ class _PeakFinderState extends State<PeakFinder> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color.fromARGB(255, 255, 255, 255),
+      backgroundColor: Color.fromARGB(255, 117, 115, 115),
+      appBar: AppBar(
+        title: Text('Peak Finder'),
+        backgroundColor: Color(0xFF242227),
+      ),
       body: Container(
-        child: Center(
-          child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              ElevatedButton(
-                onPressed: () {
-                  _startScan();
-                },
-                child: Text('Scan'),
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  sendMqttMessage('test', 'iot2/peakfinder');
-                },
-                child: Text('sendMqtt'),
-              ),
-            ],
-          ),
-        ),
+        
+        // child: Center(
+        //   child: Column(
+        //   mainAxisAlignment: MainAxisAlignment.center,
+        //     children: [
+        //       ElevatedButton(
+        //         onPressed: () {
+        //           _startScan();
+        //         },
+        //         child: Text('Scan'),
+        //       ),
+        //       ElevatedButton(
+        //         onPressed: () {
+        //           sendMqttMessage('test', 'iot2/peakfinder');
+        //         },
+        //         child: Text('sendMqtt'),
+        //       ),
+        //     ],
+        //   ),
+        // ),
       ),
     );
   }
