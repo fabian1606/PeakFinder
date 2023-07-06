@@ -9,16 +9,22 @@ import 'mqtt.dart';
 import 'dart:async';
 import 'dart:io' show Platform;
 
+MapController controller = MapController(
+  initPosition: GeoPoint(latitude: 47.4358055, longitude: 8.4737324),
+  areaLimit: BoundingBox(
+    east: 10.4922941,
+    north: 47.8084648,
+    south: 45.817995,
+    west: 5.9559113,
+  ),
+);
+
 
 int count = 0;
 
-
-
 Future<void> main() async {
-
   connectMqtt();
-
-
+  controller.dispose();
 
   runApp(
     MaterialApp(
@@ -56,62 +62,64 @@ class _PeakFinderState extends State<PeakFinder> {
     await Permission.bluetoothScan.request();
     await Permission.bluetoothConnect.request();
 
-    print(await Permission.location.isGranted && await Permission.bluetoothScan.isGranted && await Permission.bluetoothConnect.isGranted);
-    if (await Permission.location.isGranted && await Permission.bluetoothScan.isGranted && await Permission.bluetoothConnect.isGranted) {
+    print(await Permission.location.isGranted &&
+        await Permission.bluetoothScan.isGranted &&
+        await Permission.bluetoothConnect.isGranted);
+    if (await Permission.location.isGranted &&
+        await Permission.bluetoothScan.isGranted &&
+        await Permission.bluetoothConnect.isGranted) {
       try {
-          print("count:");
-        _scanStream = flutterReactiveBle
-            .scanForDevices(withServices: [],scanMode: ScanMode.lowLatency).listen((device) {
-              // print(device.serviceUuids);
-            // .scanForDevices(){
+        print("count:");
+        _scanStream = flutterReactiveBle.scanForDevices(
+            withServices: [], scanMode: ScanMode.lowLatency).listen((device) {
+          // print(device.serviceUuids);
+          // .scanForDevices(){
           if (device.name == 'ESP32_PeakFinder') {
             print('Found device: ${device.name}');
-            flutterReactiveBle.discoverServices(device.id)
-              .then((services) {
-                services.forEach ((service) {
-                if(service.serviceId ==serviceUuid){
+            flutterReactiveBle.discoverServices(device.id).then((services) {
+              services.forEach((service) {
+                if (service.serviceId == serviceUuid) {
                   print(service.serviceId);
                   _connectToDevice(device.id);
                 }
-                });
               });
+            });
             setState(() {
               _ubiqueDevice = device;
               _foundDeviceWaitingToConnect = true;
             });
-          }
-          else {
+          } else {
             // print('Found other device: ${device.name}');
           }
         });
       } catch (e) {
         print('Error while scanning for devices: $e');
       }
-    } 
-    
-    else {
+    } else {
       print('Location permission not granted');
     }
   }
 
   void _connectToDevice(String deviceId) {
-  // We're done scanning, we can cancel it
-  _scanStream.cancel();
-  // Let's listen to our connection so we can make updates on a state change
-  Stream<ConnectionStateUpdate> _currentConnectionStream = flutterReactiveBle
-      .connectToAdvertisingDevice(
-          id: deviceId,
-          prescanDuration: const Duration(seconds: 3),
-          withServices: <Uuid>[]);
-  _currentConnectionStream.listen( (event)async {
-    print(":::::::: ${event.connectionState.name}");
-    final characteristic = QualifiedCharacteristic(serviceId: serviceUuid, characteristicId: characteristicUuid, deviceId: deviceId);
-    final response = await flutterReactiveBle.readCharacteristic(characteristic);
-    print(String.fromCharCodes(response));
-  });
-}
-
-
+    // We're done scanning, we can cancel it
+    _scanStream.cancel();
+    // Let's listen to our connection so we can make updates on a state change
+    Stream<ConnectionStateUpdate> _currentConnectionStream = flutterReactiveBle
+        .connectToAdvertisingDevice(
+            id: deviceId,
+            prescanDuration: const Duration(seconds: 3),
+            withServices: <Uuid>[]);
+    _currentConnectionStream.listen((event) async {
+      print(":::::::: ${event.connectionState.name}");
+      final characteristic = QualifiedCharacteristic(
+          serviceId: serviceUuid,
+          characteristicId: characteristicUuid,
+          deviceId: deviceId);
+      final response =
+          await flutterReactiveBle.readCharacteristic(characteristic);
+      print(String.fromCharCodes(response));
+    });
+  }
 
   @override
   void dispose() {
@@ -127,28 +135,67 @@ class _PeakFinderState extends State<PeakFinder> {
         title: Text('Peak Finder'),
         backgroundColor: Color(0xFF242227),
       ),
-      body: Container(
-        
-        // child: Center(
-        //   child: Column(
-        //   mainAxisAlignment: MainAxisAlignment.center,
-        //     children: [
-        //       ElevatedButton(
-        //         onPressed: () {
-        //           _startScan();
-        //         },
-        //         child: Text('Scan'),
-        //       ),
-        //       ElevatedButton(
-        //         onPressed: () {
-        //           sendMqttMessage('test', 'iot2/peakfinder');
-        //         },
-        //         child: Text('sendMqtt'),
-        //       ),
-        //     ],
-        //   ),
-        // ),
-      ),
+      body: buildOSMWidget(),
+      // child: Center(
+      //   child: Column(
+      //   mainAxisAlignment: MainAxisAlignment.center,
+      //     children: [
+      //       ElevatedButton(
+      //         onPressed: () {
+      //           _startScan();
+      //         },
+      //         child: Text('Scan'),
+      //       ),
+      //       ElevatedButton(
+      //         onPressed: () {
+      //           sendMqttMessage('test', 'iot2/peakfinder');
+      //         },
+      //         child: Text('sendMqtt'),
+      //       ),
+      //     ],
+      //   ),
+      // ),
     );
   }
+}
+
+Widget buildOSMWidget() {
+  return OSMFlutter(
+    controller: controller,
+    userTrackingOption: UserTrackingOption(
+      enableTracking: true,
+      unFollowUser: false,
+    ),
+    initZoom: 12,
+    minZoomLevel: 8,
+    maxZoomLevel: 14,
+    stepZoom: 1.0,
+    userLocationMarker: UserLocationMaker(
+      personMarker: MarkerIcon(
+        icon: Icon(
+          Icons.location_history_rounded,
+          color: Colors.red,
+          size: 48,
+        ),
+      ),
+      directionArrowMarker: MarkerIcon(
+        icon: Icon(
+          Icons.double_arrow,
+          size: 48,
+        ),
+      ),
+    ),
+    roadConfiguration: RoadOption(
+      roadColor: Colors.yellowAccent,
+    ),
+    markerOption: MarkerOption(
+      defaultMarker: MarkerIcon(
+        icon: Icon(
+          Icons.person_pin_circle,
+          color: Colors.blue,
+          size: 56,
+        ),
+      ),
+    ),
+  );
 }
