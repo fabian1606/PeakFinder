@@ -3,7 +3,7 @@ import express from "express";
 
 export default function Home() {
   const app = express();
-  const port = 3000;
+  const port = 3003;
 
 // Start the server
 app.listen(port, () => {
