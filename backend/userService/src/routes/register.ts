@@ -20,6 +20,7 @@ const router:Router = Router();
 
 // Email anstatt username?
 // password pepper in .env hinzufügen?
+
 router.post("/", (req: Request, res: Response): void => {
     const userData = req.body;
     const dbUser = new UserModel({ email: userData.email });
