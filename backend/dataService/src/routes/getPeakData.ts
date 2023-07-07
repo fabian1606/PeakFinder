@@ -55,7 +55,13 @@ router.get("/", (req: Request, res: Response): void => {
                   if (peak) {
                       // Handle the found msgs
                       console.log(peak);
-                      res.send({"msgs":msgs, "peak":peak});
+                      const msgsVar = msgs.map((msg) => {
+                            return {
+                                msg: msg.message}
+                        });
+                        const PeakVar = {"name": peak[0].name,"id": peak[0].peakId,"avgVisitors": peak[0].averageVisitors}
+                        const data = {"peak": PeakVar, "msgs": msgsVar}
+                        res.send(data);
                   } else {
                       console.log("No peak found for this peak");
                   }
