@@ -47,22 +47,20 @@ let Name = "";
             console.log("Error getting PeakListItem from DB: " + err);
         });
 
-        // auskommentiert da ich nicht unendlich emails beim testen bekommen will
-
-    //send request to userService registerMail
-//     msgData.forEach((e: any) => {
-//       UserModel.findOne({ email: e.email })
-//         .then((user:DocumentType<User> | null): void => {
-//             if(!user){
-//                 axios.post('http://localhost:3003/registerMail', {
-//                     Headers: {
-//                         'Content-Type': 'application/json',
-//                     },
-//                     email: e.email,
-//                 })
-//             }
-//     });
-// });
+        //send request to userService registerMail
+    msgData.forEach((e: any) => {
+      UserModel.findOne({ email: e.email })
+        .then((user:DocumentType<User> | null): void => {
+            if(!user){
+                axios.post('http://localhost:3003/registerMail', {
+                    Headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    email: e.email,
+                })
+            }
+    });
+});
 
 msgData.forEach((e: any) => {
     MsgModel.findOne({ email: e.email, peakId: peakId })

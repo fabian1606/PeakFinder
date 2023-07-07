@@ -43,7 +43,16 @@ router.get("/", (req: Request, res: Response): void => {
             if (msgs) {
               // Handle the found msgs
               console.log(msgs);
-              res.send(msgs);
+const msgsVar = msgs.map((msg) => {
+                    return {
+                        msg: msg.message,
+                        peakId: msg.peakId,
+                        peakName: msg.peakName,
+                    }
+                })
+const data = {"email": email, "msgs": msgsVar};
+
+              res.send(data);
             } else {
               console.log("No msgs found for the user");
               res.send("No msgs found for the user");
