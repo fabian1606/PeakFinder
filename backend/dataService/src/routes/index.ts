@@ -3,6 +3,9 @@ import addData from "./addData";
 import getPeakName from "./getPeakName";
 import getUserData from "./getUserData";
 import getPeakData from "./getPeakData";
+import testget from "./testget";
+import testpost from "./testpost";
+
 
 const router:Router = Router();
 
@@ -14,5 +17,7 @@ router.use("/addData",addData);
 router.use("/getPeakName", getPeakName);
 router.use("/getUserData", getUserData);
 router.use("/getPeakData", getPeakData);
+router.use("/testget", testget);
+router.use("/testpost", testpost);
 
 export default router;
