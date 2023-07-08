@@ -4,6 +4,7 @@ import axios from "axios";
 import dotenv from "dotenv";
 import type { DocumentType } from "@typegoose/typegoose";
 
+// this is a test api for the esp website, delete later
 
 const router: Router = Router();
 
