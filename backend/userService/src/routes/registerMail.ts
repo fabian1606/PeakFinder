@@ -14,8 +14,12 @@ router.post("/",(req:Request,res:Response):void=>{
     console.log(email);
     console.log(password);
     
-    sendEmail(email);
-    res.send("Welcome to the login service");
+    try{
+        sendEmail(email);
+    }catch(err){
+        console.log(err);
+    }
+    res.send("Email was sent successfully");
 });
 
 async function sendEmail( email:string) {
