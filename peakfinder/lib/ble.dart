@@ -1,9 +1,13 @@
 import 'dart:ffi';
+import 'dart:math';
 import 'dart:typed_data';
+import 'package:flutter/material.dart';
 
 import 'package:flutter_reactive_ble/flutter_reactive_ble.dart';
 
 import 'package:permission_handler/permission_handler.dart';
+
+import 'dart:convert';
 
 import 'dart:async';
 import 'dart:io' show Platform;
@@ -11,9 +15,12 @@ import 'dart:io' show Platform;
 bool _foundDeviceWaitingToConnect = false;
 bool _scanStarted = false;
 bool _connected = false;
-
+bool popUp = false;
+final peakMeassage = [ "Gipfel erreicht! Du bist der Gipfelstürmer!", "Herzlichen Glückwunsch! Gipfel, du hast es geschafft!", "Auf dem Gipfel angekommen? Ab jetzt nur noch Bergab!", "Gipfel erreicht! Kein Berg ist zu hoch für dich!", "Du hast den Gipfel erobert! Zeit für ein Sieges-Selfie!", "Glückwunsch, du bist der König des Berges!", "Gipfel bezwungen! Wer braucht schon einen Aufzug?", "Gratuliere zum Gipfelsieg! Der Berg vermisst dich bereits.", "Gipfel erreicht! Ab jetzt kannst du alles von oben betrachten.", "Du hast den Gipfel erklommen! Höhenangst? Kein Problem für dich!" ];
 String msg = "";
 int msgIndex = 65535;
+
+List<String> messages = [];
 
 late DiscoveredDevice _ubiqueDevice;
 final flutterReactiveBle = FlutterReactiveBle();
@@ -29,7 +36,7 @@ void dispose() {
   // super.dispose();
 }
 
-void startScan() async {
+void startScan(BuildContext context) async {
   // bool permGranted = false;
   // setState(() {
   //   _scanStarted = true;
@@ -37,6 +44,7 @@ void startScan() async {
   await Permission.location.request();
   await Permission.bluetoothScan.request();
   await Permission.bluetoothConnect.request();
+  // await Permission.internet.request();
 
   print(await Permission.location.isGranted &&
       await Permission.bluetoothScan.isGranted &&
@@ -56,7 +64,7 @@ void startScan() async {
             services.forEach((service) {
               if (service.serviceId == serviceUuid) {
                 print(service.serviceId);
-                _connectToDevice(device.id);
+                _connectToDevice(device.id,context);
               }
             });
           });
@@ -75,8 +83,31 @@ void startScan() async {
     print('Location permission not granted');
   }
 }
+void showBackupAccountDialog(BuildContext context) {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) => AlertDialog(
+      //choose random message
+      
+      title: Text(peakMeassage[Random().nextInt(10)]),
+      content: Container(
+        height: 100,
+        width: 100,
+        child: ElevatedButton(
+          onPressed: () {
+            Navigator.of(context).pop();
+            popUp = false;
+            Navigator.pushNamed(context,'/peakBook',arguments: messages[0]);
+          },
+          child: Text('Gipfelbuch anzeigen'),
+        )
+      ),
+    ),
+  );
+}
 
-void _connectToDevice(String deviceId) {
+
+void _connectToDevice(String deviceId,BuildContext context) {
   // We're done scanning, we can cancel it
   _scanStream.cancel();
   // Let's listen to our connection so we can make updates on a state change
@@ -106,6 +137,7 @@ void _connectToDevice(String deviceId) {
         if (index == 0) {
           msgIndex = -1;
           msg = "";
+          messages.clear();
         }
         if (index > msgIndex) {
           msgIndex = index;
@@ -117,19 +149,28 @@ void _connectToDevice(String deviceId) {
             final characterChange = msg.indexOf(String.fromCharCode(0xFF));
 
             if (msg.length > characterChange + 1) {
-              String str = msg.substring(characterChange+1);
+              String str = msg.substring(characterChange + 1);
               final usersPerHour = str.split(",");
               List<int> uint8List = [];
               for (int i = 0; i < usersPerHour.length; i++) {
-                try{
+                try {
                   uint8List.add(int.parse(usersPerHour[i]));
-                }catch(e){}
+                } catch (e) {}
               }
               print(uint8List);
             }
-            msg = msg.substring(0, characterChange);
+            String jsonString ='{"arr":[' + msg.substring(0, characterChange) + ']}';
+            Map<String, dynamic> jsonData = jsonDecode(jsonString);
+            List<dynamic> arr = jsonData['arr'];
+            for (var obj in arr) {
+              messages.add(obj['msg']);
+            }
+            if(!popUp){
+              showBackupAccountDialog(context);
+              popUp = true;
+            }
+            print(messages);
           }
-          print(msg);
         }
       });
     } catch (e) {

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:peakfinder/peakBook.dart';
 
 import 'mqtt.dart';
 
@@ -8,6 +10,7 @@ import "ble.dart";
 
 import 'dart:async';
 import 'dart:io' show Platform;
+import 'network.dart';
 
 int count = 0;
 
@@ -22,7 +25,8 @@ final List<String> mountains = [
 
 Future<void> main() async {
   connectMqtt();
-
+  SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
+      overlays: []); // This hides the status bar
   runApp(
     MaterialApp(
       title: 'Peak Finder',
@@ -32,6 +36,10 @@ Future<void> main() async {
         '/details': (context) {
           final args = ModalRoute.of(context)!.settings.arguments;
           return SecondPage(data: args as String);
+        },
+        '/peakBook': (context) {
+          final args = ModalRoute.of(context)!.settings.arguments;
+          return PeakPage(data: args as String);
         },
       },
     ),
@@ -44,11 +52,15 @@ class PeakFinder extends StatefulWidget {
 }
 
 class _PeakFinderState extends State<PeakFinder> {
+    late BuildContext _storedContext; // Variable to store the BuildContext
   @override
   void initState() {
     super.initState();
-    startScan();
+    _storedContext = context; // Store the BuildContext
+    networkInit(context);
+    startScan(context);
   }
+
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: Color.fromARGB(255, 117, 115, 115),
@@ -68,13 +80,14 @@ class _PeakFinderState extends State<PeakFinder> {
                   padding: EdgeInsets.all(30.0),
                   alignment: Alignment.topLeft,
                   child: Text(
-                    'Your Achievements:',
+                    'Mountains:',
                     style: TextStyle(
                       color: Color.fromARGB(249, 223, 152, 100),
                       fontSize: 24, // Customize the font size
                       fontWeight: FontWeight.bold, // Customize the font weight
                     ),
                   )),
+
               Container(
                 padding: EdgeInsets.all(30.0),
                 height: 600,
@@ -105,7 +118,7 @@ class _PeakFinderState extends State<PeakFinder> {
                         Divider(),
                         ElevatedButton(
                           onPressed: () {
-                            startScan();
+                            startScan(context);
                           },
                           child: Text('Scan'),
                         ),
