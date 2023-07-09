@@ -103,13 +103,32 @@ void _connectToDevice(String deviceId) {
         if (event.length < 2) return;
         final newMsg = String.fromCharCodes(event.sublist(2));
         final index = (event[0] << 8) | event[1];
-        if(index == 0) msgIndex = -1;
+        if (index == 0) {
+          msgIndex = -1;
+          msg = "";
+        }
         if (index > msgIndex) {
-          msg += newMsg;
           msgIndex = index;
+          msg += newMsg;
           print(index);
         }
         if (index == 65535) {
+          if (msg.contains(String.fromCharCode(0xFF))) {
+            final characterChange = msg.indexOf(String.fromCharCode(0xFF));
+
+            if (msg.length > characterChange + 1) {
+              String str = msg.substring(characterChange+1);
+              final usersPerHour = str.split(",");
+              List<int> uint8List = [];
+              for (int i = 0; i < usersPerHour.length; i++) {
+                try{
+                  uint8List.add(int.parse(usersPerHour[i]));
+                }catch(e){}
+              }
+              print(uint8List);
+            }
+            msg = msg.substring(0, characterChange);
+          }
           print(msg);
         }
       });
