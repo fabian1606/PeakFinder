@@ -31,6 +31,7 @@ router.get("/", (req: Request, res: Response): void => {
   if(!PeakId){
     res.send("No PeakId given");
   }
+  else{
 
   axios
     .post("http://localhost:3003/login", {
@@ -87,7 +88,7 @@ router.get("/", (req: Request, res: Response): void => {
       console.log("Error sending request to userService: " + err);
       res.send("Error sending request to userService: " + err);
     });
-
+  }
 });
 
 export default router;
