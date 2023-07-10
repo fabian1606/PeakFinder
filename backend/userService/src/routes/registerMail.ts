@@ -10,9 +10,7 @@ const router:Router = Router();
 router.post("/",(req:Request,res:Response):void=>{
 
     const email = req.body.email;
-    const password = req.body.password;
     console.log(email);
-    console.log(password);
     
     try{
         sendEmail(email);

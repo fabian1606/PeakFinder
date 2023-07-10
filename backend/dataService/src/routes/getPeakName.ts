@@ -30,6 +30,7 @@ let Name = "";
             if (peakListItem) {
                 Name = peakListItem.peakName;
                 console.log(Name);
+                res.send({"peakName":Name});
             }
             else {
                 console.log("PeakListItem does not exist");
