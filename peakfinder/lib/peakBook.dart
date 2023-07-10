@@ -15,8 +15,8 @@ class _PeakPageState extends State<PeakPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Gipfelbuch"),
+      appBar: AppBar( 
+        title: Text(mountainName),
       ),
       body: Center(
         child: Column(

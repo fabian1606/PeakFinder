@@ -7,6 +7,7 @@ import 'mqtt.dart';
 import "detailPage.dart";
 import "style.dart";
 import "ble.dart";
+import "login.dart";
 
 import 'dart:async';
 import 'dart:io' show Platform;
@@ -41,6 +42,11 @@ Future<void> main() async {
           final args = ModalRoute.of(context)!.settings.arguments;
           return PeakPage(data: args as String);
         },
+        '/login': (context) {
+          final args = ModalRoute.of(context)!.settings.arguments;
+          return LoginPage(data: args as String);
+        },
+
       },
     ),
   );
@@ -59,6 +65,7 @@ class _PeakFinderState extends State<PeakFinder> {
     _storedContext = context; // Store the BuildContext
     networkInit(context);
     startScan(context);
+    Navigator.pushNamed(context,'/login',arguments: "test");
   }
 
   Widget build(BuildContext context) {

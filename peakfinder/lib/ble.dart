@@ -19,6 +19,8 @@ bool popUp = false;
 final peakMeassage = [ "Gipfel erreicht! Du bist der Gipfelstürmer!", "Herzlichen Glückwunsch! Gipfel, du hast es geschafft!", "Auf dem Gipfel angekommen? Ab jetzt nur noch Bergab!", "Gipfel erreicht! Kein Berg ist zu hoch für dich!", "Du hast den Gipfel erobert! Zeit für ein Sieges-Selfie!", "Glückwunsch, du bist der König des Berges!", "Gipfel bezwungen! Wer braucht schon einen Aufzug?", "Gratuliere zum Gipfelsieg! Der Berg vermisst dich bereits.", "Gipfel erreicht! Ab jetzt kannst du alles von oben betrachten.", "Du hast den Gipfel erklommen! Höhenangst? Kein Problem für dich!" ];
 String msg = "";
 int msgIndex = 65535;
+int mountainId = 0;
+String mountainName = "";
 
 List<String> messages = [];
 
@@ -146,6 +148,7 @@ void _connectToDevice(String deviceId,BuildContext context) {
         }
         if (index == 65535) {
           if (msg.contains(String.fromCharCode(0xFF))) {
+            mountainId = msg.codeUnitAt(0);
             final characterChange = msg.indexOf(String.fromCharCode(0xFF));
 
             if (msg.length > characterChange + 1) {
@@ -159,9 +162,10 @@ void _connectToDevice(String deviceId,BuildContext context) {
               }
               print(uint8List);
             }
-            String jsonString ='{"arr":[' + msg.substring(0, characterChange) + ']}';
+            String jsonString = msg.substring(0, characterChange) + ']}';
             Map<String, dynamic> jsonData = jsonDecode(jsonString);
             List<dynamic> arr = jsonData['arr'];
+            mountainName = jsonData['a'].toString();
             for (var obj in arr) {
               messages.add(obj['msg']);
             }
@@ -169,7 +173,8 @@ void _connectToDevice(String deviceId,BuildContext context) {
               showBackupAccountDialog(context);
               popUp = true;
             }
-            print(messages);
+            print("id: "+mountainId.toString());
+            print("message: "+ messages.toString()+jsonString);
           }
         }
       });
