@@ -47,7 +47,7 @@ router.post("/", (req: Request, res: Response): void => {
             }
         })
         .catch((err: Error): void => {
-            res.send("Error: " + err);
+            res.status(500).send("Error: " + err);
         });
 });
 
