@@ -37,20 +37,20 @@ router.get("/", (req: Request, res: Response): void => {
     })
     .then((response: any): void => {
       if (response.status == 200) {
-        
+
         MsgModel.find({ email: email })
           .then((msgs: DocumentType<Msg>[] | null): void => {
             if (msgs) {
               // Handle the found msgs
               console.log(msgs);
-const msgsVar = msgs.map((msg) => {
-                    return {
-                        msg: msg.message,
-                        peakId: msg.peakId,
-                        peakName: msg.peakName,
-                    }
-                })
-const data = {"email": email, "msgs": msgsVar};
+              const msgsVar = msgs.map((msg) => {
+                return {
+                  msg: msg.message,
+                  peakId: msg.peakId,
+                  peakName: msg.peakName,
+                }
+              })
+              const data = { "email": email, "msgs": msgsVar };
 
               res.send(data);
             } else {

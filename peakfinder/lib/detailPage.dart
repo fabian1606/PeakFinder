@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:peakfinder/ble.dart';
 
 class SecondPage extends StatelessWidget {
   final String data;
@@ -10,7 +11,7 @@ class SecondPage extends StatelessWidget {
         title: Text(data),
       ),
       body: Center(
-        child: Text('This is the second page.'),
+        child: Text(messages.length > 0?messages[0]:""),
       ),
     );
   }
