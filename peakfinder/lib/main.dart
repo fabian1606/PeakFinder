@@ -42,7 +42,7 @@ Future<void> main() async {
         },
         '/details': (context) {
           final args = ModalRoute.of(context)!.settings.arguments;
-          return SecondPage(data: args as String);
+          return SecondPage(data: args as String, peakId: args as String);
         },
         '/peakBook': (context) {
           final args = ModalRoute.of(context)!.settings.arguments;
@@ -114,10 +114,12 @@ class _PeakFinderState extends State<PeakFinder> {
                         itemBuilder: (context, index) {
                           return InkWell(
                             onTap: () {
-                              Navigator.pushNamed(
-                                context,
-                                '/details',
-                                arguments: snapshot.data!.peaks[index].peakName,
+                              Navigator.push(context,
+                                  MaterialPageRoute(builder: (context) {
+                                return SecondPage(
+                                    data: snapshot.data!.peaks[index].peakName,
+                                    peakId: snapshot.data!.peaks[index].peakId.toString());
+                              })
                               );
                             },
                             child: Container(

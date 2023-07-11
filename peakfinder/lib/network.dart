@@ -7,8 +7,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:dart_ping/dart_ping.dart';
 import 'ble.dart';
 import 'types/allPeaks.dart';
+import 'types/getPeakData.dart';
 
-String ip = "0.0.0.0";
+String ip = "192.168.80.162";
 String email = "";
 String password = "";
 BuildContext storedContext = null as BuildContext;
@@ -17,12 +18,25 @@ final storage = new FlutterSecureStorage();
 
 Future<Peaks> getAllPeaks() async {
   print("getting peaks");
-  final response = await http.get(Uri.parse('http://192.168.80.162:3004/getAllPeaks'));
+  final response = await http.get(Uri.parse('http://$ip:3004/getAllPeaks'));
 // Read value
   if (response.statusCode == 200) {
     print("succsess");
     final jsonMap = jsonDecode(response.body);
     return Peaks.fromJson(jsonMap);
+
+  } else {
+    throw Exception('Failed to load peaks');
+  }
+}
+
+Future<AllPeakData> getPeakData(String peakId) async {
+  print("getting peak data");
+  final response = await http.post(Uri.parse('http://$ip:3004/getPeakData'),body: {'peakId': peakId});
+  if (response.statusCode == 200) {
+    print("succsess");
+    final jsonMap = jsonDecode(response.body);
+    return AllPeakData.fromJson(jsonMap);
 
   } else {
     throw Exception('Failed to load peaks');
@@ -46,7 +60,7 @@ login(String email, String psw) async {
   print("login in...");
 
 //   return;
-  final response = await http.post(Uri.parse('http://xps-15:3004/login'),
+  final response = await http.post(Uri.parse('http://$ip:3004/login'),
 // Read value
       body: {'email': email, 'password': psw});
 
@@ -108,7 +122,7 @@ void showBackupAccountDialog(BuildContext context) {
 
 checkIp() async {
   getIp();
-  final ping = Ping('http://XPS-15:3004/getPeakData', count: 1);
+  final ping = Ping('http://$ip:3004/getPeakData', count: 1);
 
   // Begin ping process and listen for output
   ping.stream.listen((event) {
@@ -126,7 +140,7 @@ networkInit(BuildContext context) async {
 addMessage(String message) async {
   // await checkIp();
   // messages.add(message);
-  final response = await http.post(Uri.parse('http://XPS-15:3004/addData'),
+  final response = await http.post(Uri.parse('http://$ip:3004/addData'),
       headers: {'Content-Type': 'application/json'}, body: message);
 
   if (response.statusCode == 200) {

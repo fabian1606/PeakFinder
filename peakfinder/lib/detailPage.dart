@@ -3,18 +3,33 @@ import 'dart:ffi';
 import 'package:flutter/material.dart';
 import 'package:peakfinder/ble.dart';
 import 'package:fl_chart/fl_chart.dart';
+import 'package:peakfinder/network.dart';
+import 'package:peakfinder/types/getPeakData.dart';
 
-class SecondPage extends StatelessWidget {
+class SecondPage extends StatefulWidget {
+  late Future<AllPeakData> futurePeakData;
+
+  final String data;
+  final String peakId;
+  SecondPage({required this.data, required this.peakId});
+  // void initState() {
+  //   futurePeakData = getPeakData(data);
+  // }
+  @override
+  SecondPageState createState() => SecondPageState();
+}
+
+class SecondPageState extends State<SecondPage> {
   List<Color> gradientColors = [
     Color.fromARGB(255, 255, 165, 21),
     Colors.deepOrange,
   ];
 
   bool showAvg = false;
-  final String data;
-  SecondPage({required this.data});
   @override
   Widget build(BuildContext context) {
+    Future<AllPeakData> futurePeakData = getPeakData(widget.peakId);//widget.data
+    String data = widget.data; // Accessing the data property
     return Scaffold(
       appBar: AppBar(
         title: Text(data),
@@ -33,8 +48,27 @@ class SecondPage extends StatelessWidget {
             SizedBox(
               width: 300,
               height: 200,
-              child: LineChart(
-                avgData([0,10,12,10,0]),
+              child: FutureBuilder<AllPeakData>(
+                future: futurePeakData,
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    print(snapshot.data!.peaks[0].avgVisitors);
+                    List<int> avDataList = [];
+                    for(int i = 0; i < snapshot.data!.peaks.length; i++){
+                      print(snapshot.data!.peaks[i].avgVisitors);
+                      avDataList.add(int.parse(snapshot.data!.peaks[i].avgVisitors));
+                    }
+                    return LineChart(
+                      avgData(avDataList),
+                    );
+                    // return Text("test");
+                  } else if (snapshot.hasError) {
+                    return Text('${snapshot.error}');
+                  }
+
+                  // By default, show a loading spinner.
+                  return const CircularProgressIndicator();
+                },
               ),
             ),
           ],
@@ -44,15 +78,15 @@ class SecondPage extends StatelessWidget {
   }
 
   LineChartData avgData(data) {
-    List<FlSpot> charData = [] ;//= const [FlSpot(0, 10),FlSpot(5, 5)];
+    List<FlSpot> charData = []; //= const [FlSpot(0, 10),FlSpot(5, 5)];
     int maxVal = 0;
-    int count =0;
+    int count = 0;
     data.forEach((element) {
-      charData.add(FlSpot((-1*(count++)).toDouble(), element.toDouble()));
+      charData.add(FlSpot((-1 * (count++)).toDouble(), element.toDouble()));
       if (element > maxVal) {
         maxVal = element;
       }
-    print(charData);
+      print(charData);
     });
     return LineChartData(
       lineTouchData: const LineTouchData(enabled: false),
@@ -89,13 +123,11 @@ class SecondPage extends StatelessWidget {
       borderData: FlBorderData(
         show: false,
       ),
-      minX: (-1*(data.length-1)).toDouble(),
+      minX: (-1 * (data.length - 1)).toDouble(),
       maxX: 0,
       minY: 0,
-      maxY: (maxVal+2).toDouble(),
-
+      maxY: (maxVal + 2).toDouble(),
       lineBarsData: [
-
         LineChartBarData(
           spots: charData,
           isCurved: true,
