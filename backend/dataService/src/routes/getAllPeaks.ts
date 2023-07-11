@@ -10,6 +10,7 @@ import PeakListItemModel from '../models/peakList';
 import type { PeakList } from '../types/peakList';
 
 import msg from '../types/msg';
+import { Peak } from '../types/peak';
 
 
 
@@ -18,52 +19,26 @@ import msg from '../types/msg';
 const router:Router = Router();
 
 router.get("/", (req: Request, res: Response): void => {
-    const Data = req.body;
-    const newPeakName = Data.newPeakName;
-    const peakId = Data.peakId;
-    console.log(peakId);
-    console.log(newPeakName);
 
-    if(!peakId){
-        res.status(400).send("peakId necessary");
-    }
-
-let Name = "";
-    PeakListItemModel.findOne({ peakId: peakId })
-        .then((peakListItem:DocumentType<PeakList> | null): void => {
-            if (peakListItem) {
-                Name = peakListItem.peakName;
-                console.log(Name);
-                res.send({"peakName":Name});
+    let arrOfPeaks: { peakId: string; peakName: string; }[] = [];
+    
+    PeakListItemModel.find()
+        .then((peakListItems:DocumentType<PeakList>[] | null): void => {
+            if (peakListItems) {
+                console.log(peakListItems);
+                peakListItems.forEach((peakListItem) => {
+                    const peakId = peakListItem.peakId;
+                    const peakName = peakListItem.peakName;
+                    const peak = {peakId: peakId, peakName: peakName};
+                    arrOfPeaks.push(peak);
+                })
+                res.send({"arrOfPeaks":arrOfPeaks});
             }
             else {
                 console.log("PeakListItem does not exist");
-                if(!newPeakName){
-                    res.status(400).send("newPeakName necessary");
-                }
-                const newPeakListItem = new PeakListItemModel({
-                    peakId: peakId,
-                    peakName: newPeakName,
-                });
-            
-                newPeakListItem.save()
-                    .then((peakListItem: DocumentType<PeakList>): void => {
-                        console.log("PeakListItem created: " + peakListItem);
-                    }
-                    )
-                    .catch((err: Error): void => {
-                        console.log("Error creating PeakListItem: " + err);
-                    }
-                    );
+                res.status(400).send("PeakListItem does not exist");
             }
-        }
-        )
-        .catch((err: Error): void => {
-            console.log("Error getting PeakListItem from DB: " + err);
-        }
-        );
-    
-        res.send("PeakListItem created");
+        })
     });
 
 export default router;
