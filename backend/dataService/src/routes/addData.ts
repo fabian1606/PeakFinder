@@ -28,9 +28,6 @@ router.post("/", (req: Request, res: Response): void => {
     const msgData = Data.msgs;
     const peakData = Data.avgVisitors;
     const peakId = Data.id;
-    console.log(msgData);
-    console.log(peakData);
-    console.log(peakId);
     const pattern: RegExp = /^[\w\.-]+@[\w\.-]+\.\w+$/;
     
 let Name = "";
@@ -38,10 +35,9 @@ let Name = "";
         .then((peakListItem:DocumentType<PeakList> | null): void => {
             if (peakListItem) {
                 Name = peakListItem.peakName;
-                console.log(Name);
             }
             else {
-                console.log("PeakListItem does not exist");
+                console.log(peakListItem+"PeakListItem does not exist");
             }
         })
         .catch((err: Error): void => {
@@ -51,7 +47,7 @@ let Name = "";
         //send request to userService registerMail
     msgData.forEach((e: any) => {
         if(!pattern.test(e.email)){
-            console.log("Invalid email");
+            console.log(e.email+" Invalid email");
             return;
         }
       UserModel.findOne({ email: e.email })
@@ -69,7 +65,7 @@ let Name = "";
 
 msgData.forEach((e: any) => {
     if(!pattern.test(e.email)){
-        console.log("Invalid email");
+        console.log(e.email+" Invalid email");
         return;
     }
     MsgModel.findOne({ email: e.email, peakId: peakId })
@@ -84,15 +80,15 @@ msgData.forEach((e: any) => {
                 });
                 newMsg.save()
                     .then((msg:DocumentType<Msg>): void => {
-                        console.log("Msg saved successfully");
+                        console.log(msg+"Msg saved successfully");
                     })
                     .catch((err: Error): void => {
                         console.log("Error saving msg: " + err);
                     });
-                console.log("Msg does not exist");
+                console.log(msg+"Msg does not exist");
             }
             else {
-                console.log("Msg already exists");
+                console.log(msg+"Msg already exists");
             }
         })
         .catch((err: Error): void => {
@@ -112,15 +108,14 @@ peakData.forEach((e: any) => {
                 });
                 newPeak.save()
                     .then((peak:DocumentType<Peak>): void => {
-                        console.log("Peak saved successfully");
+                        console.log(peak+" Peak saved successfully");
                     })
                     .catch((err: Error): void => {
                         console.log("Error saving peak: " + err);
                     });
-                console.log("Peak post does not exist");
             }
             else {
-                console.log("Peak post already exists");
+                console.log(peak+" Peak post already exists");
             }
         })
         .catch((err: Error): void => {
