@@ -41,6 +41,9 @@ router.post("/", (req: Request, res: Response): void => {
     })
     .then((response: any): void => {
       if (response.status == 200) {
+MsgModel.find({ email: email , peakId: peakId})
+        .then((msgs: DocumentType<Msg>[] | null): void => {
+            if (!msgs) {
         const msg = new MsgModel({
             email: email,
             message: msgData,
@@ -56,13 +59,16 @@ router.post("/", (req: Request, res: Response): void => {
             res.send("Error saving msg to DB: " + err);
         });
       } else {
-        throw new Error("wrong input");
+        throw new Error("message already exists");
       }
     })
     .catch((err: Error): void => {
       console.log("Error sending request to userService: " + err);
       res.send("Error sending request to userService: " + err);
     });
-});
+}else {
+    throw new Error("wrong input");
+    };
+})});
 
 export default router;

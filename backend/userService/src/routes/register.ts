@@ -10,19 +10,12 @@ dotenv.config();
 
 const router:Router = Router();
 
-// router.post("/",(req:Request,res:Response):void=>{
-
-//     const email = req.body.email;
-//     const password = req.body.password;
-    
-//     res.send("Welcome to the login service");
-// });
-
-// Email anstatt username?
-// password pepper in .env hinzufügen?
-
 router.post("/", (req: Request, res: Response): void => {
+    const pattern: RegExp = /^[\w\.-]+@[\w\.-]+\.\w+$/;
     const userData = req.body;
+    if(!pattern.test(userData.email)){
+        res.status(400).send("Invalid email");
+            } 
     const dbUser = new UserModel({ email: userData.email });
     bcrypt.hash(userData.password + process.env.PASSWORD_PEPPER, 10)
         .then((hash: string): void => {
