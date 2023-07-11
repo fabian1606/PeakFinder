@@ -39,6 +39,15 @@ router.get("/", (req: Request, res: Response): void => {
           PeakModel.find({ peakId: PeakId })
             .then((peak: DocumentType<Peak>[] | null): void => {
               if (peak) {
+                peak.forEach((peakListItem) => {
+                  const newPeakData = {
+                    peakId: peakListItem.peakId,
+                    peakName: peakListItem.name,
+                    avgVisitors: peakListItem.averageVisitors,
+                    timestamp: peakListItem.timestamp,
+                  };
+                  arrOfPeaks.push(newPeakData);
+                });
                 // Handle the found msgs
                 const msgsVar = msgs.map((msg) => {
                   return {
@@ -46,7 +55,7 @@ router.get("/", (req: Request, res: Response): void => {
                   };
                 });
                 // const PeakVar = {"name": peak[0].name,"id": peak[0].peakId,"avgVisitors": peak[0].averageVisitors}
-                const data = { peak: peak, msgs: msgsVar };
+                const data = { peak: arrOfPeaks, msgs: msgsVar };
                 res.send(data);
               } else {
                 console.log("No peak found for this peak");
