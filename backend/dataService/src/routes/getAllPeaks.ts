@@ -55,7 +55,6 @@ let Name = "";
                         console.log("Error creating PeakListItem: " + err);
                     }
                     );
-
             }
         }
         )
