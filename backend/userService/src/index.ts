@@ -3,6 +3,7 @@ import type { Express } from 'express';
 import mongoose from 'mongoose';
 import routes from './routes';
 import dotenv from 'dotenv';
+import cors from 'cors';
 
 dotenv.config();
 
@@ -28,6 +29,9 @@ mongoose
   
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
+  app.use(cors({
+    origin: '*',
+}))
   app.use("/",routes);
 
   app.listen(port, ():void => {

@@ -19,7 +19,7 @@ export default function Index() {
 
   const handleRegister = () => {
     axios
-    axios.post('http://localhost:3003/register', { email, password })
+    axios.post('http://xps-15:3003/register', { email, password })
     .then(res => {
     if(res.status != 200){
       alert('Registration successful!');

@@ -92,7 +92,7 @@ void showBackupAccountDialog(BuildContext context) {
 
 checkIp() async {
   getIp();
-  final ping = Ping('http://XPS-15:3003/getPeakData', count: 1);
+  final ping = Ping('http://XPS-15:3004/getPeakData', count: 1);
 
   // Begin ping process and listen for output
   ping.stream.listen((event) {
@@ -113,7 +113,7 @@ addMessage(String message) async {
   // messages.add(message);
   final response =
       await http.post(
-        Uri.parse('http://XPS-15:3003/addData'),
+        Uri.parse('http://XPS-15:3004/addData'),
         headers: {'Content-Type': 'application/json'},
         body: message);
 
