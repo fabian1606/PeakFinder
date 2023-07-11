@@ -28,7 +28,7 @@ Diese werte und die Erfolge der usern können diese in der flutter app nachsehen
         -> request: Post: {"email":"example@mail.de","password":"123456789"}
         -> response: 200 ->"account und password werden im backend verglichen"
 
-     -> registeerMail
+     -> registerMail
         -> request: Post: {"email":"example@mail.de"}
         -> response: 200 -> "email wird an user gesendet, ist für user gedacht welche auf dem berg einen eintrag machen und später benachrichtigt werden sollen, damit sie sich anschliessend einen account machen können und die app runterladen können"
 
@@ -52,7 +52,7 @@ Diese werte und die Erfolge der usern können diese in der flutter app nachsehen
     
      -> getUserData
         -> request: Get {"email":"beispiel@email.de","password":"123456789"}
-        -> response: {"email":"beispiel@email.de","[{"peakId":"001","peakName":"Zugspitze","msg":"Hallo Welt"},{}"peakId":"002","peakName":"Mount Bacon","msg":"Hallo Welt"},...]"}
+        -> response: {"email":"beispiel@email.de","[{"peakId":"001","peakName":"Zugspitze","msg":"Hallo Welt"},{"peakId":"002","peakName":"Mount Bacon","msg":"Hallo Welt"},...]"}
     
      -> addSingleMessage
         -> request: Post: {"email":"beispiel@email.de","password":"123456","msg":"Hallo Welt","id":"peakId"}
