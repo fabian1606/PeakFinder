@@ -38,7 +38,12 @@ Diese werte und die Erfolge der usern können diese in der flutter app nachsehen
      -> getUserData
         -> request: Get {"email":"beispiel@email.de","password":"123456789"}
         -> response: {"email":"beispiel@email.de","[{"peakId":"001","peakName":"Zugspitze","msg":"Hallo Welt"},{}"peakId":"002","peakName":"Mount Bacon","msg":"Hallo Welt"},...]"}
-
+     -> addSingleMessage
+        -> request: Post: {"email":"beispiel@email.de","password":"123456","msg":"Hallo Welt","id":"peakId"}
+        -> response: 200 -> message saved
+     -> getAllPeaks
+        -> request: get
+        -> response: ["{"peakName":"Zugspitze","peakId":"001"},{"peakName":"Zugspitze","peakId":"001"},..."]
         (the responses onnly count if input correct)
 
 Installation:

@@ -25,24 +25,11 @@ const router: Router = Router();
 router.get("/", (req: Request, res: Response): void => {
   const Data = req.body;
   const PeakId = Data.peakId;
-  const email = Data.email;
-  const password = Data.password;
 
   if(!PeakId){
     res.send("No PeakId given");
   }
   else{
-
-  axios
-    .post("http://localhost:3003/login", {
-      Headers: {
-        "Content-Type": "application/json",
-      },
-      email: email,
-      password: password,
-    })
-    .then((response: any): void => {
-      if (response.status == 200) {
         
         MsgModel.find({peakId: PeakId})
           .then((msgs: DocumentType<Msg>[] | null): void => {
@@ -79,15 +66,6 @@ router.get("/", (req: Request, res: Response): void => {
           .catch((err: Error): void => {
             console.log("Error finding msgs: " + err);
           });
-
-      } else {
-        throw new Error("wrong input");
-      }
-    })
-    .catch((err: Error): void => {
-      console.log("Error sending request to userService: " + err);
-      res.send("Error sending request to userService: " + err);
-    });
   }
 });
 
