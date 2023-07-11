@@ -18,6 +18,10 @@ export default function Index() {
   };
 
   const handleRegister = () => {
+    const pattern = /^[^ ]+@[^ ]+\.[a-z]{2,3}$/;
+    if(!pattern.test(email)){
+      return alert("Invalid email address");
+          }    
     axios
     axios.post('http://xps-15:3003/register', { email, password })
     .then(res => {
