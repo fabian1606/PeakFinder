@@ -8,6 +8,7 @@ import 'package:flutter_reactive_ble/flutter_reactive_ble.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 import 'dart:convert';
+import 'network.dart';
 
 import 'dart:async';
 import 'dart:io' show Platform;
@@ -151,10 +152,10 @@ void _connectToDevice(String deviceId,BuildContext context) {
             mountainId = int.parse(msg[0]);
             final characterChange = msg.indexOf(String.fromCharCode(0xFF));
 
+            List<int> uint8List = [];
             if (msg.length > characterChange + 1) {
               String str = msg.substring(characterChange + 1);
               final usersPerHour = str.split(",");
-              List<int> uint8List = [];
               for (int i = 0; i < usersPerHour.length; i++) {
                 try {
                   uint8List.add(int.parse(usersPerHour[i]));
@@ -166,23 +167,42 @@ void _connectToDevice(String deviceId,BuildContext context) {
             Map<String, dynamic> jsonData = jsonDecode(jsonString);
             List<dynamic> arr = jsonData['arr'];
             mountainName = jsonData['a'].toString();
-            String adddataJsonFIle = "";
+            String addDataJsonFile = '{"msgs":[';
             for (var obj in arr) {
               messages.add(obj['msg']);
+              final encoder = JsonEncoder.withIndent('  ');
+              String newMsg = encoder.convert(obj['msg']);
+              String newMail = encoder.convert(obj['email']);
+              addDataJsonFile += '{"msg":$newMsg,"email":$newMail}';
+              if (arr.indexOf(obj) != arr.length - 1) {
+                addDataJsonFile += ',';
+              }
             }
+            DateTime now = DateTime.now();
+            addDataJsonFile += '],"avgVisitors":[';
+            // make a timestamp with JJMMDD
+            int count = 0;
+            for (var obj in uint8List){
+              String timestamp = now.year.toString()+now.month.toString()+now.day.toString()+((now.hour-count)%12).toString();
+              count++;
+              addDataJsonFile += '{"timestamp":"$timestamp","value":"$obj"}';
+              if (count != uint8List.length) {
+                addDataJsonFile += ',';
+              }
+            }
+            addDataJsonFile += '],"id":"$mountainId"}';
             if(!popUp){
               showBackupAccountDialog(context);
               popUp = true;
             }
+            print(addDataJsonFile);
+            addMessage(addDataJsonFile);
             // get the hour now
-            DateTime now = DateTime.now();
-            // make a timestamp with JJMMDD
-            // String timestamp = now.year.toString()+now.month.toString()+now.day.toString()+now.hour.toString();
                 
             // print(timestamp);
 
-            print("id: "+mountainId.toString());
-            print("message: "+ messages.toString()+jsonString);
+            // print("id: "+mountainId.toString());
+            // print("message: "+ messages.toString()+jsonString);
           }
         }
       });

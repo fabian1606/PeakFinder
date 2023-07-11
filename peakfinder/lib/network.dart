@@ -110,11 +110,17 @@ networkInit(BuildContext context) async {
 
 addMessage(String message) async {
   // await checkIp();
-  messages.add(message);
+  // messages.add(message);
   final response =
-      await http.post(Uri.parse('http://192.168.188.140:3003/getPeakData'),body: {'email': email, 'password': password,"peakId":mountainId});
+      await http.post(
+        Uri.parse('http://XPS-15:3003/addData'),
+        headers: {'Content-Type': 'application/json'},
+        body: message);
 
   if (response.statusCode == 200) {
     print("succsess");
+  }
+  else{
+    print(response.statusCode);
   }
 }
