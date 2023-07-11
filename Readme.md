@@ -9,7 +9,7 @@
 
 ### Projektbeschreibung:
 
-peakfinder ist eine app die es usern ermöglicht auf digitale gipfelbücher zuzugreifen und eigene einträge hinzuzufügen.
+Peakfinder ist eine app die es usern ermöglicht auf digitale gipfelbücher zuzugreifen und eigene einträge hinzuzufügen.
 dafür hat jeder gipfel ein modul mit einem esp als kern, dieser hostet eine webseite die den gipfelbucheintrag zulässt und usern eine Nachweiß Plattform zu bieten um ihren gipfelstieg in der app als erfolg hinzuzufügen.
 
 Ebenfalls sammelt der esp währenddessen durchschnitts daten der anwesenheit von umliegendengeräten, was zur nachvollziehung der beliebtheit des gipfels folgt.
@@ -103,50 +103,52 @@ Die Flutter app fragt die anzahl der Menschen die den Gipfel erreicht haben auch
 #### Must Have (bestehens-relevant)
 
 - [x] Sensormodul, das Daten erhebt und in ein System einspeist:
-- Backend mit eigener dokumentierter API für HTTP-Requests
-- Anzeige der gespeicherten Sensorwerte
-- Nutzung von .env oder Ähnlichem, um Credentials auf github zu verbergen.
-- Ausformuliertes Datenmodell inkl. Entity-Relationship-Model
-- github Monorepo
-- .gitignore, in der node_modules enthalten ist. Hochgeladener node_modules-Ordner = Schelle.
-- Projekt-Doku als README.md
-- Screencast (in Google Drive, nicht im Repo!)
+- [x] Backend mit eigener dokumentierter API für HTTP-Requests
+- [x] Anzeige der gespeicherten Sensorwerte
+- [x] Nutzung von .env oder Ähnlichem, um Credentials auf github zu verbergen.
+- [x] Ausformuliertes Datenmodell inkl. Entity-Relationship-Model
+- [x] github Monorepo
+- [x] .gitignore, in der node_modules enthalten ist. Hochgeladener node_modules-Ordner = Schelle.
+- [x] Projekt-Doku als README.md
+- [x] Screencast (in Google Drive, nicht im Repo!)
 
 #### Should Have (~ relevant für die Note vor dem Komma)
 
-- UX-getriebenes Konzept
-- Frontend für User
-- User-Authentifizierung (Register / Login / Logout)
-- Anzeige / Visualisierung der Sensorwerte
-- Interessantere, komplexere Datenabfragen und -darstellungen
-- Skalierbarkeit des Systems (mehr User / mehr Sensoren / etc.)
-- Microservices-Infrastruktur (User Service, Data Service, etc.)
+- [x] UX-getriebenes Konzept
+- [x] Frontend für User
+- [x] User-Authentifizierung (Register / Login)
+- [x] Anzeige / Visualisierung der Sensorwerte
+- [x] Interessantere, komplexere Datenabfragen und -darstellungen
+- [x] Skalierbarkeit des Systems (mehr User / mehr Sensoren / etc.)
+- [x] Microservices-Infrastruktur (User Service, Data Service, etc.)
 
 
 #### Could Have (~ relevant für die Note nach dem Komma)
 
-- Gestaltetes Frontend / ggf. mit Framework (next.js / vue / …)
-- Prototyping: Cases für Komponenten usw., 3d-gedruckt oder Lasercuts
-- Aufwändige Datenvisualisierungen über Graphen hinaus
-- Zuordnung neue Sensormodule zu User (Pairing-Prozess), zumindest als Überlegung
-- Zuordnung der User zu ihren Sensormodulen, damit sie nur ihre eigenen bzw. berechtigten Sensoren sehen
-- User-Authentifizierung über distinguierte Libraries / Frameworks (z. B. Passport, JSON Web Tokens)
-- Session-Timeouts
-- Sensor- / ESP-Informationen im Frontend bearbeiten
-- Sensor objektorientiert programmiert
-- Deep Sleep-Implementierung
-- Onboarding: Logon speichern / Cookie setzen / localStorage / Wizard statistische / prognostische Auswertung der Daten (AI?)
-- User-Authentifizierung über externen Dienst (z. B. Google)
-- Alerts / Alarme Konfigurieren einzelner Sensormodule (z. B. Intervalle ändern)
-- OpenAPI / Swagger.io / [apicur.io](http://apicur.io) nutzen
-- Benutzerrollen (nur ansehen, editieren, etc.)
-- Überlegungen zur Energieversorgung (Laufzeit, Energiespeicher, Lademöglichkeit, etc.)
-- Lauffähige Docker-Container / shell + batch für alle Images + Container
+- [x] Gestaltetes Frontend / ggf. mit Framework (next.js / vue / …)
+- [x] Prototyping: Cases für Komponenten usw., 3d-gedruckt oder Lasercuts
+- [ ] Aufwändige Datenvisualisierungen über Graphen hinaus
+- [x] Zuordnung neue Sensormodule zu User (Pairing-Prozess), zumindest als Überlegung
+- [ ] Zuordnung der User zu ihren Sensormodulen, damit sie nur ihre eigenen bzw. berechtigten Sensoren sehen
+- [ ] User-Authentifizierung über distinguierte Libraries / Frameworks (z. B. Passport, JSON Web Tokens)
+- [ ] Session-Timeouts
+- [x] Sensor- / ESP-Informationen im Frontend bearbeiten
+- [x] Sensor objektorientiert programmiert
+- [ ] Deep Sleep-Implementierung
+- [ ] Onboarding: Logon speichern / Cookie setzen / localStorage / Wizard statistische / prognostische Auswertung der Daten (AI?)
+- [ ] User-Authentifizierung über externen Dienst (z. B. Google)
+- [ ] Alerts / Alarme Konfigurieren einzelner Sensormodule (z. B. Intervalle ändern)
+- [ ] OpenAPI / Swagger.io / [apicur.io](http://apicur.io) nutzen
+- [ ] Benutzerrollen (nur ansehen, editieren, etc.)
+- [x] Überlegungen zur Energieversorgung (Laufzeit, Energiespeicher, Lademöglichkeit, etc.)
+- [ ] Lauffähige Docker-Container / shell + batch für alle Images + Container
 
-#### Bewertungskriterien
-
-- Anforderungen erfüllt?
-- lauffähig?
-- eigener Code über Unterrichtsprojekt hinaus?
-- kein absoluter Quatsch?
-→ bestanden
+#### We Haves:
+- [x] Registration Mails
+- [x] Webserver auf dem ESP mit Frontend
+- [x] API auf dem ESP
+- [x] EEprom Verwendung auf dem ESP
+- [x] Custom Partition Table (Neue Speicherzuordnung wegen zu wenig speiherplatz)
+- [x] Captive portal zum weiterleiten der User
+- [x] Reset Button doppelclick
+- [x] Backend in ordnern sortiert und typisiert
