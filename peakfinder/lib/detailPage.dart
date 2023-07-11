@@ -48,7 +48,7 @@ class SecondPage extends StatelessWidget {
     int maxVal = 0;
     int count =0;
     data.forEach((element) {
-      charData.add(FlSpot((count++).toDouble(), element.toDouble()));
+      charData.add(FlSpot((-1*(count++)).toDouble(), element.toDouble()));
       if (element > maxVal) {
         maxVal = element;
       }
@@ -89,8 +89,8 @@ class SecondPage extends StatelessWidget {
       borderData: FlBorderData(
         show: false,
       ),
-      minX: 0,
-      maxX: (data.length-1).toDouble(),
+      minX: (-1*(data.length-1)).toDouble(),
+      maxX: 0,
       minY: 0,
       maxY: (maxVal+2).toDouble(),
 

@@ -12,6 +12,7 @@ import "login.dart";
 import 'dart:async';
 import 'dart:io' show Platform;
 import 'network.dart';
+import 'types/allPeaks.dart';
 
 int count = 0;
 
@@ -63,6 +64,7 @@ class PeakFinder extends StatefulWidget {
 
 class _PeakFinderState extends State<PeakFinder> {
   late BuildContext _storedContext; // Variable to store the BuildContext
+  late Future<Peaks> futurePeaks;
   @override
   void initState() {
     super.initState();
@@ -70,6 +72,7 @@ class _PeakFinderState extends State<PeakFinder> {
     networkInit(context);
     startScan(context);
     checkLogin();
+    futurePeaks = getAllPeaks();
     // if (!checkLogin()){
     //   Navigator.pushNamed( context, '/login', arguments: 'test', );
     // }
@@ -102,54 +105,48 @@ class _PeakFinderState extends State<PeakFinder> {
                     ),
                   )),
               Container(
-                padding: EdgeInsets.all(30.0),
-                height: 600,
-                child: ListView.builder(
-                  itemCount: mountains.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    return Column(
-                      children: [
-                        InkWell(
-                          onTap: () {
-                            Navigator.pushNamed(
-                              context,
-                              '/details',
-                              arguments: mountains[index],
-                            );
-                          },
-                          child: Container(
-                            child: ListTile(
-                              title: Text(
-                                mountains[index],
-                                style: TextStyle(
-                                  color: Colors.white60,
+                child: FutureBuilder<Peaks>(
+                  future: futurePeaks,
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      return ListView.builder(
+                        itemCount: snapshot.data!.peaks.length,
+                        itemBuilder: (context, index) {
+                          return InkWell(
+                            onTap: () {
+                              Navigator.pushNamed(
+                                context,
+                                '/details',
+                                arguments: snapshot.data!.peaks[index].peakName,
+                              );
+                            },
+                            child: Container(
+                              child: ListTile(
+                                title: Text(
+                                  snapshot.data!.peaks[index].peakName,
+                                  style: TextStyle(
+                                    color: Colors.white60,
+                                  ),
                                 ),
                               ),
                             ),
-                          ),
-                        ),
-                        Divider(),
-                      ],
-                    );
+                          );
+                        },
+                      );
+                    } else if (snapshot.hasError) {
+                      return Text('${snapshot.error}');
+                    }
+
+                    // By default, show a loading spinner.
+                    return const CircularProgressIndicator();
                   },
                 ),
+                padding: EdgeInsets.all(30.0),
+                height: 500,
               )
             ],
           ),
         )
-        // child: Center(
-        //   child: Column(
-        //   mainAxisAlignment: MainAxisAlignment.center,
-        //     children: [
-        //       ElevatedButton(
-        //         onPressed: () {
-        //           sendMqttMessage('test', 'iot2/peakfinder');
-        //         },
-        //         child: Text('sendMqtt'),
-        //       ),
-        //     ],
-        //   ),
-        // ),
         );
   }
 }

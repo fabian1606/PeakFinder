@@ -1,9 +1,12 @@
+import 'dart:convert';
+
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:dart_ping/dart_ping.dart';
 import 'ble.dart';
+import 'types/allPeaks.dart';
 
 String ip = "0.0.0.0";
 String email = "";
@@ -12,18 +15,31 @@ BuildContext storedContext = null as BuildContext;
 final storage = new FlutterSecureStorage();
 
 
+Future<Peaks> getAllPeaks() async {
+  print("getting peaks");
+  final response = await http.get(Uri.parse('http://192.168.80.162:3004/getAllPeaks'));
+// Read value
+  if (response.statusCode == 200) {
+    print("succsess");
+    final jsonMap = jsonDecode(response.body);
+    return Peaks.fromJson(jsonMap);
+
+  } else {
+    throw Exception('Failed to load peaks');
+  }
+}
 
 Future checkLogin() async {
-    email = await storage.read(key: "email") as String;
-    password = await storage.read(key: "password") as String;
-    if (email == null || password == null) {
-      print("no password or email");
-      return false;
-    } else {
-      print("email: $email");
-      print("password: $password");
-      return true;
-    }
+  email = await storage.read(key: "email") as String;
+  password = await storage.read(key: "password") as String;
+  if (email == null || password == null) {
+    print("no password or email");
+    return false;
+  } else {
+    print("email: $email");
+    print("password: $password");
+    return true;
+  }
 }
 
 login(String email, String psw) async {
@@ -104,23 +120,18 @@ checkIp() async {
 }
 
 networkInit(BuildContext context) async {
-  await getIp();
   storedContext = context;
 }
 
 addMessage(String message) async {
   // await checkIp();
   // messages.add(message);
-  final response =
-      await http.post(
-        Uri.parse('http://XPS-15:3004/addData'),
-        headers: {'Content-Type': 'application/json'},
-        body: message);
+  final response = await http.post(Uri.parse('http://XPS-15:3004/addData'),
+      headers: {'Content-Type': 'application/json'}, body: message);
 
   if (response.statusCode == 200) {
     print("succsess");
-  }
-  else{
+  } else {
     print(response.statusCode);
   }
 }

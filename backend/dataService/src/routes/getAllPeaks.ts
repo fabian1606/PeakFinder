@@ -32,7 +32,7 @@ router.get("/", (req: Request, res: Response): void => {
                     const peak = {peakId: peakId, peakName: peakName};
                     arrOfPeaks.push(peak);
                 })
-                res.send({"arrOfPeaks":arrOfPeaks});
+                res.send({"peaks":arrOfPeaks});
             }
             else {
                 console.log("PeakListItem does not exist");
