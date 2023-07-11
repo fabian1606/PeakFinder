@@ -42,9 +42,9 @@ Diese werte und die Erfolge der usern können diese in der flutter app nachsehen
         -> response: 200 -> "speichert die daten in die datenbank"
 
      -> getPeakData
-        -> request: Get: {"peakId":"001","email":"beispiel@email.de","password":"123456"}
+        -> request: Get: {"peakId":"001"}
         -> response: -> {"name": peak[0].name,"id": peak[0].peakId,"avgVisitors": peak[0].averageVisitors}
-        {"peak": {"name": "Zugspitze","id": "001","avgVisitors": "value"}, "msgs": "[{"msg":"hallo"},{}"msg":"hallo"},...]"}
+        {"peak": [{"timeStamp":"JJJJMMDDHH","avgVisitors": "value},{"timeStamp":"JJJJMMDDHH","avgVisitors": "value},...], "msgs": "[{"msg":"hallo"},{}"msg":"hallo"},...]"}
      
      -> getPeakName
         -> request: Get: {"peakId":"001","newPeakName":"Mount Bacon"} - New Peakname funktioniert nur falls es noch kein mountain mit dieser id in der datenbank existiert, der wert newPeakName ist eigentlich nur zu testzwecken entstanden.
