@@ -58,4 +58,4 @@ Zur Installation muss:
 
 Entity Relationship Model
 
-
+![Screenshot](entityrelationship.png)
