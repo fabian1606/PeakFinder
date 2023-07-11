@@ -1,6 +1,7 @@
 -Projekt Beschreibung-
 -API Dokumentation-
 -Installation-
+-Entity Relationship Model-
 
 -> Peakfinder:
 peakfinder ist eine app die es usern ermöglicht auf digitale gipfelbücher zuzugreifen und eigene einträge hinzuzufügen.
@@ -51,6 +52,10 @@ Zur Installation muss:
 ->jeweils in userService, dataService und web_register npm i ausgeführt werden
      ->Eine vernünftige .env angelegt werden, siehe .env.example -> userService sollte port 3003 und dataService port 3004 haben
      -> zu den nötigen werten der .env gehören einlog daten zu einer mongodb datenbank, sowie zu einem email provider service
--> Flutter stuff: kp nicht mein teil der arbeit gewesen
--> esp code: same wie oben, aber hier wird man halt den code hochladen und das ist es
--> 
+-> Flutter stuff: https://docs.flutter.dev/ -> anschliessend flutter code auf mobilgerät laufen lassen
+-> esp code: auf esp32 hochladen
+-> dafür sorgen das alles im gleichen netzwerk läuft
+
+Entity Relationship Model
+
+
