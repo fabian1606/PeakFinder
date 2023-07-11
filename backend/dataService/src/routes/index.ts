@@ -5,6 +5,7 @@ import getUserData from "./getUserData";
 import getPeakData from "./getPeakData";
 import testget from "./testget";
 import testpost from "./testpost";
+import getAllPeaks from "./getAllPeaks";
 
 
 const router:Router = Router();
@@ -19,5 +20,6 @@ router.use("/getUserData", getUserData);
 router.use("/getPeakData", getPeakData);
 router.use("/testget", testget);
 router.use("/testpost", testpost);
+router.use("/getAllPeaks", getAllPeaks);
 
 export default router;

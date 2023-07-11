@@ -31,13 +31,13 @@ Diese werte und die Erfolge der usern können diese in der flutter app nachsehen
      -> getPeakData
         -> request: Get: {"peakId":"001","email":"beispiel@email.de","password":"123456"}
         -> response: -> {"name": peak[0].name,"id": peak[0].peakId,"avgVisitors": peak[0].averageVisitors}
-        {"peak": {"name": "Zugspitze","id": "001","avgVisitors": "value"}, "msgs": "[["msg":"hallo"],["msg":"hallo"],...]"}
+        {"peak": {"name": "Zugspitze","id": "001","avgVisitors": "value"}, "msgs": "[{"msg":"hallo"},{}"msg":"hallo"},...]"}
      -> getPeakName
         -> request: Get: {"peakId":"001","newPeakName":"Mount Bacon"} - New Peakname funktioniert nur falls es noch kein mountain mit dieser id in der datenbank existiert, der wert newPeakName ist eigentlich nur zu testzwecken entstanden.
         -> response: {"peakName":"Zugspitze"} or "new peakListItem created"
      -> getUserData
         -> request: Get {"email":"beispiel@email.de","password":"123456789"}
-        -> response: {"email":"beispiel@email.de","[["peakId":"001","peakName":"Zugspitze","msg":"Hallo Welt"],"peakId":"002","peakName":"Mount Bacon","msg":"Hallo Welt"],...]"}
+        -> response: {"email":"beispiel@email.de","[{"peakId":"001","peakName":"Zugspitze","msg":"Hallo Welt"},{}"peakId":"002","peakName":"Mount Bacon","msg":"Hallo Welt"},...]"}
 
         (the responses onnly count if input correct)
 
