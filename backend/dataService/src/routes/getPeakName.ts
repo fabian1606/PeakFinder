@@ -24,6 +24,10 @@ router.get("/", (req: Request, res: Response): void => {
     console.log(peakId);
     console.log(newPeakName);
 
+    if(!peakId){
+        res.status(400).send("peakId necessary");
+    }
+
 let Name = "";
     PeakListItemModel.findOne({ peakId: peakId })
         .then((peakListItem:DocumentType<PeakList> | null): void => {
@@ -34,6 +38,9 @@ let Name = "";
             }
             else {
                 console.log("PeakListItem does not exist");
+                if(!newPeakName){
+                    res.status(400).send("newPeakName necessary");
+                }
                 const newPeakListItem = new PeakListItemModel({
                     peakId: peakId,
                     peakName: newPeakName,
