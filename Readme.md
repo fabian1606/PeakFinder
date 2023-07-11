@@ -140,7 +140,7 @@ Die Flutter app fragt die anzahl der Menschen die den Gipfel erreicht haben auch
 - [x] Überlegungen zur Energieversorgung (Laufzeit, Energiespeicher, Lademöglichkeit, etc.)
 - [ ] Lauffähige Docker-Container / shell + batch für alle Images + Container
 
-#### We Haves:
+#### We Have:
 - [x] Registration Mails
 - [x] Webserver auf dem ESP mit Frontend
 - [x] API auf dem ESP
