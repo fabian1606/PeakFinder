@@ -22,7 +22,7 @@ import msg from "../types/msg";
 
 const router: Router = Router();
 
-router.get("/", (req: Request, res: Response): void => {
+router.post("/", (req: Request, res: Response): void => {
   const Data = req.body;
   const PeakId = Data.peakId;
   let arrOfPeaks: any = [];
