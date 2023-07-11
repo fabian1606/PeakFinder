@@ -25,7 +25,7 @@ const router: Router = Router();
 router.get("/", (req: Request, res: Response): void => {
   const Data = req.body;
   const PeakId = Data.peakId;
-  let arrOfPeaks: { peakId: string; peakName: string }[] = [];
+  let arrOfPeaks: any = [];
 
   if (!PeakId) {
     res.send("No PeakId given");
@@ -41,8 +41,6 @@ router.get("/", (req: Request, res: Response): void => {
               if (peak) {
                 peak.forEach((peakListItem) => {
                   const newPeakData = {
-                    peakId: peakListItem.peakId,
-                    peakName: peakListItem.name,
                     avgVisitors: peakListItem.averageVisitors,
                     timestamp: peakListItem.timestamp,
                   };
