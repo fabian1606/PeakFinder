@@ -1,11 +1,8 @@
 # Peak Finder- Digitales Gipfelbuch
 ### Semesterprojekt Victor Blaga & Fabian Rafreider (The real Fabi) IOT2  SS-2023 
 
-### Inhalt:
-- Projekt Beschreibung
-- API Dokumentation
-- Installation
-- Entity Relationship Model
+### ESP Code:
+https://github.com/fabian1606/Peak-finder-esp32-code 
 
 ### Projektbeschreibung:
 
