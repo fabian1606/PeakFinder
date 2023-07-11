@@ -1,9 +1,14 @@
--Projekt Beschreibung-
--API Dokumentation-
--Installation-
--Entity Relationship Model-
+# Peak Finder- Digitales Gipfelbuch
+### Semesterprojekt Victor Blaga & Fabian Rafreider (The real Fabi) IOT2  SS-2023 
 
--> Peakfinder:
+### Inhalt:
+- Projekt Beschreibung
+- API Dokumentation
+- Installation
+- Entity Relationship Model
+
+### Projektbeschreibung:
+
 peakfinder ist eine app die es usern ermöglicht auf digitale gipfelbücher zuzugreifen und eigene einträge hinzuzufügen.
 dafür hat jeder gipfel ein modul mit einem esp als kern, dieser hostet eine webseite die den gipfelbucheintrag zulässt und usern eine Nachweiß Plattform zu bieten um ihren gipfelstieg in der app als erfolg hinzuzufügen.
 
@@ -13,9 +18,9 @@ Diese werte und die Erfolge der usern können diese in der flutter app nachsehen
 
 
 
--> API Doku
+### Api Aufbau:
 
-  -> userService 
+  #### User Service 
 
 
      -> login
@@ -32,7 +37,7 @@ Diese werte und die Erfolge der usern können diese in der flutter app nachsehen
 
 
 
-  -> data Service
+  #### Data Service
 
      -> addData
         -> request: Post: {"msgs":[{"msg":"Hallo","email":"Beispiel@email.de},{"msg":"Hallo","email":"Beispiel@email.de"}],"avgVisitors":[{"timestamp":"230707,"value":"25"},{"timestamp":"230708","value":"25"}],"id":"001"}
@@ -61,15 +66,87 @@ Diese werte und die Erfolge der usern können diese in der flutter app nachsehen
         -> response: ["{"peakName":"Zugspitze","peakId":"001"},{"peakName":"Zugspitze","peakId":"001"},..."]
         (the responses onnly count if input correct)
 
-Installation:
-Zur Installation muss:
-->jeweils in userService, dataService und web_register npm i ausgeführt werden
-     ->Eine vernünftige .env angelegt werden, siehe .env.example -> userService sollte port 3003 und dataService port 3004 haben
+### Installation
+#### node:
+- jeweils in userService, dataService und web_register npm i ausgeführt werden
+- Eine vernünftige .env angelegt werden, siehe .env.example -> userService sollte port 3003 und dataService port 3004 haben
      -> zu den nötigen werten der .env gehören einlog daten zu einer mongodb datenbank, sowie zu einem email provider service
--> Flutter stuff: https://docs.flutter.dev/ -> anschliessend flutter code auf mobilgerät laufen lassen via "flutter run"
--> esp code: auf esp32 hochladen
--> dafür sorgen das alles im gleichen netzwerk läuft
+#### Flutter: 
+- Flutter muss installiert werden https://docs.flutter.dev/ 
+- Developer Modus auf dem Handy (Android) anschalten
+- flutter: ```flutter pub get``` ausführen
+- ```flutter run``` ausführen um die app auf dem Gerät zu installieren
+#### ESP-32
+- Platform IO extension für VS-code installieren
+- Projekt öffnen 
+- Code flashen
+### Setup
+- Power button des ESPs im 1s Abstand 2 mal  drücken dadurch wird der config- Modus aktiviert. Und Name und Berg ID können eingegeben werden.
+### Technologien
+- BLE: Wir verwenden BLE um daten vom es zum ESP auf das Handy zu übertragen -> BLE benötigt keine Kopplung -> Prozess läuft im Hintergrund ab ohne User interaktionen
+- Captive portal: Wir verwenden captive portals um den User nachdem er sich mit dem ESP Wlan verbunden hat direkt auf die Website weiterzuleiten
+- Node Mailer: Wir verschicken automaisch mails um dem User die registrierung zu erleichtern
+- Wifi Sniffer: Wir verwenden eine funktion der esp-wifi library von espIDF die es uns ermöglicht die Anzahl der Nutzer auf dem Gipfel zu tracken.
+### Unsere Daten:
+Die Daten ergeben sich aus den Geräten, die sich auf dem Gipfel versuchen mit dem Wlan des ESP-32 zu verbinden bzw daten über das Netzwerk wie Netzwerkname vom esp anfragen.
 
-Entity Relationship Model
+Diese Daten werden dann sobald sich ein Handy mit der App auf dem Gipfel befindet per ble an dieses übertragen. Das Handy schickt diese per http Request an den Server, welcher sie in einer Mongo-db Datenbank speichert.
+
+Die Flutter app fragt die anzahl der Menschen die den Gipfel erreicht haben auch aus dem Backend per HTTP- Request an und zeigt sie in einem Graph an. 
+
+#### Entity Relationship Model
 
 ![entityrelationship.png](entityrelationship.png)
+
+### Sachen erledigt
+
+#### Must Have (bestehens-relevant)
+
+- [x] Sensormodul, das Daten erhebt und in ein System einspeist:
+- Backend mit eigener dokumentierter API für HTTP-Requests
+- Anzeige der gespeicherten Sensorwerte
+- Nutzung von .env oder Ähnlichem, um Credentials auf github zu verbergen.
+- Ausformuliertes Datenmodell inkl. Entity-Relationship-Model
+- github Monorepo
+- .gitignore, in der node_modules enthalten ist. Hochgeladener node_modules-Ordner = Schelle.
+- Projekt-Doku als README.md
+- Screencast (in Google Drive, nicht im Repo!)
+
+#### Should Have (~ relevant für die Note vor dem Komma)
+
+- UX-getriebenes Konzept
+- Frontend für User
+- User-Authentifizierung (Register / Login / Logout)
+- Anzeige / Visualisierung der Sensorwerte
+- Interessantere, komplexere Datenabfragen und -darstellungen
+- Skalierbarkeit des Systems (mehr User / mehr Sensoren / etc.)
+- Microservices-Infrastruktur (User Service, Data Service, etc.)
+
+
+#### Could Have (~ relevant für die Note nach dem Komma)
+
+- Gestaltetes Frontend / ggf. mit Framework (next.js / vue / …)
+- Prototyping: Cases für Komponenten usw., 3d-gedruckt oder Lasercuts
+- Aufwändige Datenvisualisierungen über Graphen hinaus
+- Zuordnung neue Sensormodule zu User (Pairing-Prozess), zumindest als Überlegung
+- Zuordnung der User zu ihren Sensormodulen, damit sie nur ihre eigenen bzw. berechtigten Sensoren sehen
+- User-Authentifizierung über distinguierte Libraries / Frameworks (z. B. Passport, JSON Web Tokens)
+- Session-Timeouts
+- Sensor- / ESP-Informationen im Frontend bearbeiten
+- Sensor objektorientiert programmiert
+- Deep Sleep-Implementierung
+- Onboarding: Logon speichern / Cookie setzen / localStorage / Wizard statistische / prognostische Auswertung der Daten (AI?)
+- User-Authentifizierung über externen Dienst (z. B. Google)
+- Alerts / Alarme Konfigurieren einzelner Sensormodule (z. B. Intervalle ändern)
+- OpenAPI / Swagger.io / [apicur.io](http://apicur.io) nutzen
+- Benutzerrollen (nur ansehen, editieren, etc.)
+- Überlegungen zur Energieversorgung (Laufzeit, Energiespeicher, Lademöglichkeit, etc.)
+- Lauffähige Docker-Container / shell + batch für alle Images + Container
+
+#### Bewertungskriterien
+
+- Anforderungen erfüllt?
+- lauffähig?
+- eigener Code über Unterrichtsprojekt hinaus?
+- kein absoluter Quatsch?
+→ bestanden
