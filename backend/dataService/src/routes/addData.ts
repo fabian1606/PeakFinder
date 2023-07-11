@@ -31,6 +31,7 @@ router.post("/", (req: Request, res: Response): void => {
     console.log(msgData);
     console.log(peakData);
     console.log(peakId);
+    const pattern: RegExp = /^[\w\.-]+@[\w\.-]+\.\w+$/;
     
 let Name = "";
     PeakListModel.findOne({ peakId: peakId })
@@ -49,6 +50,10 @@ let Name = "";
 
         //send request to userService registerMail
     msgData.forEach((e: any) => {
+        if(!pattern.test(e.email)){
+            console.log("Invalid email");
+            return;
+        }
       UserModel.findOne({ email: e.email })
         .then((user:DocumentType<User> | null): void => {
             if(!user){
@@ -63,6 +68,10 @@ let Name = "";
 });
 
 msgData.forEach((e: any) => {
+    if(!pattern.test(e.email)){
+        console.log("Invalid email");
+        return;
+    }
     MsgModel.findOne({ email: e.email, peakId: peakId })
         .then((msg:DocumentType<Msg> | null): void => {
             if (!msg) {
