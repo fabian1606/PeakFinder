@@ -1,11 +1,60 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
+import 'network.dart';
+
 final storage = new FlutterSecureStorage();
 
-savePW (final mail, final pw)async{
-  await storage.write(key: "email", value: mail);
-  await storage.write(key: "password", value: pw);
+void showLoginDialog(BuildContext context) {
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  TextEditingController _textFieldController = TextEditingController();
+  showDialog(
+    context: context,
+    builder: (BuildContext context) => AlertDialog(
+      //choose random message
+      title: Text("Set Server IP"),
+      content: Container(
+        height: 120,
+        width: 100,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Text("Email"),
+            TextField(
+              controller: _emailController,
+              decoration: InputDecoration(
+                labelText: 'Email',
+              ),
+            ),
+            SizedBox(height: 16.0),
+            Text("Password"),
+            TextField(
+              controller: _passwordController,
+              decoration: InputDecoration(
+                labelText: 'Password',
+              ),
+              obscureText: true,
+            ),
+            SizedBox(height: 24.0),
+            ElevatedButton(
+              onPressed: () {
+                String email = _emailController.text;
+                String password = _passwordController.text;
+                print('Email: $email');
+                print('Password: $password');
+                // savePW(email, password);
+                // Navigator.pop(context);
+                login(email, password);
+              },
+              child: Text('Login'),
+            ),
+          ],
+        ),
+      ),
+    ),
+  );
 }
 
 
@@ -49,7 +98,9 @@ class LoginPage extends StatelessWidget {
                 String password = _passwordController.text;
                 print('Email: $email');
                 print('Password: $password');
-                savePW(email, password);
+                // savePW(email, password);
+                // Navigator.pop(context);
+                login(email, password);
               },
               child: Text('Login'),
             ),

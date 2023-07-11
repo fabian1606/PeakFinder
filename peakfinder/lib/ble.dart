@@ -148,7 +148,7 @@ void _connectToDevice(String deviceId,BuildContext context) {
         }
         if (index == 65535) {
           if (msg.contains(String.fromCharCode(0xFF))) {
-            mountainId = msg.codeUnitAt(0);
+            mountainId = int.parse(msg[0]);
             final characterChange = msg.indexOf(String.fromCharCode(0xFF));
 
             if (msg.length > characterChange + 1) {
@@ -162,10 +162,11 @@ void _connectToDevice(String deviceId,BuildContext context) {
               }
               print(uint8List);
             }
-            String jsonString = msg.substring(0, characterChange) + ']}';
+            String jsonString = msg.substring(1, characterChange) + ']}';
             Map<String, dynamic> jsonData = jsonDecode(jsonString);
             List<dynamic> arr = jsonData['arr'];
             mountainName = jsonData['a'].toString();
+            String adddataJsonFIle = "";
             for (var obj in arr) {
               messages.add(obj['msg']);
             }
@@ -173,6 +174,13 @@ void _connectToDevice(String deviceId,BuildContext context) {
               showBackupAccountDialog(context);
               popUp = true;
             }
+            // get the hour now
+            DateTime now = DateTime.now();
+            // make a timestamp with JJMMDD
+            // String timestamp = now.year.toString()+now.month.toString()+now.day.toString()+now.hour.toString();
+                
+            // print(timestamp);
+
             print("id: "+mountainId.toString());
             print("message: "+ messages.toString()+jsonString);
           }

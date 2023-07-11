@@ -31,9 +31,14 @@ Future<void> main() async {
   runApp(
     MaterialApp(
       title: 'Peak Finder',
+      debugShowCheckedModeBanner: false,
       home: PeakFinder(),
       theme: appTheme(),
       routes: {
+        '/test': (context) {
+          final args = ModalRoute.of(context)!.settings.arguments;
+          return PeakFinder();
+        },
         '/details': (context) {
           final args = ModalRoute.of(context)!.settings.arguments;
           return SecondPage(data: args as String);
@@ -46,7 +51,6 @@ Future<void> main() async {
           final args = ModalRoute.of(context)!.settings.arguments;
           return LoginPage(data: args as String);
         },
-
       },
     ),
   );
@@ -58,14 +62,17 @@ class PeakFinder extends StatefulWidget {
 }
 
 class _PeakFinderState extends State<PeakFinder> {
-    late BuildContext _storedContext; // Variable to store the BuildContext
+  late BuildContext _storedContext; // Variable to store the BuildContext
   @override
   void initState() {
     super.initState();
     _storedContext = context; // Store the BuildContext
     networkInit(context);
     startScan(context);
-    Navigator.pushNamed(context,'/login',arguments: "test");
+    checkLogin();
+    // if (!checkLogin()){
+    //   Navigator.pushNamed( context, '/login', arguments: 'test', );
+    // }
   }
 
   Widget build(BuildContext context) {
@@ -94,7 +101,6 @@ class _PeakFinderState extends State<PeakFinder> {
                       fontWeight: FontWeight.bold, // Customize the font weight
                     ),
                   )),
-
               Container(
                 padding: EdgeInsets.all(30.0),
                 height: 600,
@@ -123,12 +129,6 @@ class _PeakFinderState extends State<PeakFinder> {
                           ),
                         ),
                         Divider(),
-                        ElevatedButton(
-                          onPressed: () {
-                            startScan(context);
-                          },
-                          child: Text('Scan'),
-                        ),
                       ],
                     );
                   },
