@@ -52,10 +52,10 @@ Zur Installation muss:
 ->jeweils in userService, dataService und web_register npm i ausgeführt werden
      ->Eine vernünftige .env angelegt werden, siehe .env.example -> userService sollte port 3003 und dataService port 3004 haben
      -> zu den nötigen werten der .env gehören einlog daten zu einer mongodb datenbank, sowie zu einem email provider service
--> Flutter stuff: https://docs.flutter.dev/ -> anschliessend flutter code auf mobilgerät laufen lassen
+-> Flutter stuff: https://docs.flutter.dev/ -> anschliessend flutter code auf mobilgerät laufen lassen via "flutter run"
 -> esp code: auf esp32 hochladen
 -> dafür sorgen das alles im gleichen netzwerk läuft
 
 Entity Relationship Model
 
-![Screenshot](entityrelationship.png)
+![entityrelationship.png](entityrelationship.png)
